@@ -5,6 +5,11 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class CurrencyMathTest {
+    @Test fun moneyIsDisplayedWithTwoDecimalsWithoutReducingCalculationPrecision() {
+        assertTrue(com.example.currencyapp.ui.main.number(12542.655).endsWith(",66"))
+        assertEquals("150,00", com.example.currencyapp.ui.main.amountText(150.0))
+        assertEquals(0.01234568, CurrencyMath.convert(1.0, 1.0, 81.0), 0.000000001)
+    }
     @Test fun convertsViaRublesAndSupportsSameCurrency() {
         assertEquals(900.0, CurrencyMath.convert(10.0, 90.0, 1.0), 0.00000001)
         assertEquals(10.0, CurrencyMath.convert(900.0, 1.0, 90.0), 0.00000001)

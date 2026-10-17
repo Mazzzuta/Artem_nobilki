@@ -37,17 +37,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
         .stateIn(viewModelScope, SharingStarted.Eagerly, AppData())
 
     val filteredPairs = combine(data, filter, preferences.values) { state, criteria, prefs ->
-        val cutoff = if (criteria.days == 0) 0 else Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, -criteria.days) }.timeInMillis
-        val selectedIds = criteria.categoryId?.let { id -> state.links.filter { it.categoryId == id }.map { it.pairId }.toSet() }
-        val result = state.pairs.filter { pair ->
-            (criteria.query.isBlank() || listOf(pair.title, pair.note, pair.fromCode, pair.toCode).any { it.contains(criteria.query, true) }) &&
-                (selectedIds == null || pair.id in selectedIds) && pair.createdAt >= cutoff
-        }
-        when (prefs.sort) {
-            1 -> result.sortedBy { it.title.lowercase() }
-            2 -> result.sortedBy { it.createdAt }
-            else -> result.sortedByDescending { it.createdAt }
-        }
+        filterPairs(state, criteria, prefs.sort)
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     init { refresh() }
@@ -60,7 +50,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
                 mutableStatus.value = LoadStatus(message = "Курсы ЦБ обновлены")
             } catch (cancelled: CancellationException) { throw cancelled }
             catch (error: Exception) {
-                mutableStatus.value = LoadStatus(message = "Не удалось обновить курсы. Сохранённые данные доступны офлайн. ${error.localizedMessage ?: "Проверьте интернет"}")
+                mutableStatus.value = LoadStatus(message = "Не удалось обновить курсы ЦБ. Проверьте интернет и попробуйте ещё раз. Сохранённые данные доступны офлайн.")
             }
         }
     }
@@ -86,4 +76,18 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
             return AppViewModel(application) as T
         }
     }
+}
+
+internal fun filterPairs(state: AppData, criteria: PairFilter, sort: Int, now: Long = System.currentTimeMillis()): List<FavoritePairEntity> {
+        val cutoff = if (criteria.days == 0) 0 else now - criteria.days * 86_400_000L
+        val selectedIds = criteria.categoryId?.let { id -> state.links.filter { it.categoryId == id }.map { it.pairId }.toSet() }
+        val result = state.pairs.filter { pair ->
+            (criteria.query.isBlank() || listOf(pair.title, pair.note, pair.fromCode, pair.toCode).any { it.contains(criteria.query, true) }) &&
+                (selectedIds == null || pair.id in selectedIds) && pair.createdAt >= cutoff
+        }
+        return when (sort) {
+            1 -> result.sortedBy { it.title.lowercase() }
+            2 -> result.sortedBy { it.createdAt }
+            else -> result.sortedByDescending { it.createdAt }
+        }
 }

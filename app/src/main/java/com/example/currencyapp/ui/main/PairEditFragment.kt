@@ -30,7 +30,7 @@ class PairEditFragment : Fragment(R.layout.fragment_pair_edit) {
             val pair = original
             if (savedInstanceState == null) {
                 b.name.setText(pair?.title.orEmpty())
-                b.amount.setText((pair?.defaultAmount ?: 1.0).toString())
+                b.amount.setText(amountText(pair?.defaultAmount ?: 1.0))
                 b.note.setText(pair?.note.orEmpty())
                 pair?.let { b.from.setSelection(codes.indexOf(it.fromCode)); b.to.setSelection(codes.indexOf(it.toCode)) }
             }

@@ -4,14 +4,9 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 
-/**
- * Промежуточная связующая таблица для реализации связи «Многие-ко-Многим» (N:M)
- * между Валютами и Категориями.
- * Таблица: currency_category_cross_ref
- */
 @Entity(
     tableName = "currency_category_cross_ref",
-    primaryKeys = ["currencyCode", "categoryId"], // Составной первичный ключ
+    primaryKeys = ["currencyCode", "categoryId"],
     foreignKeys = [
         ForeignKey(
             entity = CurrencyEntity::class,

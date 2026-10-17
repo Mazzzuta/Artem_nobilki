@@ -67,7 +67,7 @@ class AppRepository(private val db: AppDatabase, private val cbr: CbrClient = Cb
             throw cancelled
         } catch (error: Exception) {
             val cached = db.ratePointDao().get(currency.code, start, end)
-            cached to if (cached.isEmpty()) "История недоступна: ${error.localizedMessage}" else "Нет связи с ЦБ. Показана сохранённая история"
+            cached to if (cached.isEmpty()) "Не удалось загрузить историю ЦБ. Проверьте интернет и попробуйте ещё раз." else "Нет связи с ЦБ. Показана сохранённая история"
         }
     }
 }

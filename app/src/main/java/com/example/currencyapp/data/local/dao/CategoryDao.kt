@@ -21,8 +21,6 @@ interface CategoryDao {
 
     @Query("SELECT * FROM categories WHERE categoryId = :categoryId LIMIT 1")
     suspend fun getCategoryById(categoryId: Long): CategoryEntity?
-
-    // Получить категории, к которым принадлежит конкретная валюта
     @Query("""
         SELECT cat.* FROM categories cat
         INNER JOIN currency_category_cross_ref ref ON cat.categoryId = ref.categoryId

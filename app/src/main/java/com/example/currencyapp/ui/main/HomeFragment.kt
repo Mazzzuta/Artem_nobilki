@@ -29,7 +29,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             b.progress.visibility = if (state.loaded) View.GONE else View.VISIBLE
         }
         observe(model.filteredPairs) { pairs ->
-            adapter.submitList(pairs.map { RecordRow(it.id.toString(), it.title, "${it.fromCode} → ${it.toCode} · ${number(it.defaultAmount)}\n${it.note}") })
+            adapter.submitList(pairs.map { RecordRow(it.id.toString(), it.title, "${it.fromCode} → ${it.toCode} · ${number(it.defaultAmount)}\n${it.note}".trimEnd()) })
             b.empty.visibility = if (pairs.isEmpty()) View.VISIBLE else View.GONE
             b.empty.text = if (model.data.value.pairs.isEmpty()) "Нет избранных пар. Нажмите «Добавить пару», чтобы создать первую." else "Ничего не найдено. Измените поиск или фильтры."
         }

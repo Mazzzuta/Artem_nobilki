@@ -29,11 +29,18 @@ class AnalyticsFragment : Fragment(R.layout.fragment_analytics) {
             chart.setNoDataTextColor(textColor)
         }
         style(b.usageChart); style(b.rateChart)
+        b.rateChart.legend.isEnabled = false
+        b.rateChart.setExtraOffsets(12f, 8f, 24f, 16f)
+        b.rateChart.xAxis.setAvoidFirstLastClipping(true)
+        b.rateChart.xAxis.yOffset = 8f
         listOf(b.usageChart.axisLeft, b.usageChart.axisRight, b.rateChart.axisLeft, b.rateChart.axisRight).forEach { it.textColor = textColor }
         b.usageChart.axisLeft.axisMinimum = 0f
         b.usageChart.axisLeft.granularity = 1f
         b.usageChart.axisRight.isEnabled = false
         b.rateChart.axisRight.isEnabled = false
+        b.rateChart.axisLeft.valueFormatter = object : com.github.mikephil.charting.formatter.ValueFormatter() {
+            override fun getFormattedValue(value: Float) = number(value.toDouble())
+        }
         listOf(b.usageChart.xAxis, b.rateChart.xAxis).forEach { it.textColor = textColor; it.position = XAxis.XAxisPosition.BOTTOM; it.granularity = 1f }
         fun loadChart() {
             model.data.value.currencies.find { it.code == selectedCode }?.let { model.loadChart(it, selectedDays) }
@@ -71,7 +78,7 @@ class AnalyticsFragment : Fragment(R.layout.fragment_analytics) {
             b.progress.visibility = if (chart.status.loading) View.VISIBLE else View.GONE
             b.chartStatus.text = chart.status.message
             b.rateChart.clear()
-            b.rateStats.text = ""
+            b.rateStats.visibility = View.GONE
             if (chart.points.isNotEmpty()) {
                 val points = chart.points
                 b.rateChart.data = LineData(LineDataSet(points.mapIndexed { index, point -> Entry(index.toFloat(), point.rubPerUnit.toFloat()) }, "1 ${chart.code} в RUB").apply {
@@ -79,8 +86,16 @@ class AnalyticsFragment : Fragment(R.layout.fragment_analytics) {
                 })
                 b.rateChart.xAxis.valueFormatter = IndexAxisValueFormatter(points.map { dateText(it.date) })
                 b.rateChart.xAxis.setLabelCount(3, true)
+                b.rateChart.marker = RateMarkerView(requireContext(), points, chart.code).apply { chartView = b.rateChart }
+                b.rateChart.setHighlightPerTapEnabled(true)
                 val values = points.map { it.rubPerUnit }
-                b.rateStats.text = "1 ${chart.code} в RUB\n${dateText(points.first().date)} — ${dateText(points.last().date)}\nМинимум: ${number(values.minOrNull()!!)}\nМаксимум: ${number(values.maxOrNull()!!)}\nСреднее: ${number(values.average())}\nТочек: ${points.size}"
+                b.rateStats.visibility = View.VISIBLE
+                b.ratePair.text = "1 ${chart.code} в RUB"
+                b.ratePeriod.text = "${dateText(points.first().date)} — ${dateText(points.last().date)}"
+                b.minRate.text = number(values.minOrNull()!!)
+                b.maxRate.text = number(values.maxOrNull()!!)
+                b.averageRate.text = number(values.average())
+                b.pointCount.text = points.size.toString()
             }
             b.rateChart.invalidate()
         }

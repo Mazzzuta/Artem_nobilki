@@ -18,20 +18,12 @@ interface CurrencyDao {
 
     @Delete
     suspend fun deleteCurrency(currency: CurrencyEntity)
-
-    // Получить все валюты (по умолчанию по коду A-Z)
     @Query("SELECT * FROM currencies ORDER BY code ASC")
     fun getAllCurrencies(): Flow<List<CurrencyEntity>>
-
-    // Получить конкретную валюту по коду
     @Query("SELECT * FROM currencies WHERE code = :code LIMIT 1")
     fun getCurrencyByCode(code: String): Flow<CurrencyEntity?>
-
-    // Поиск по коду или названию валюты (LIKE)
     @Query("SELECT * FROM currencies WHERE code LIKE '%' || :query || '%' OR name LIKE '%' || :query || '%' ORDER BY code ASC")
     fun searchCurrencies(query: String): Flow<List<CurrencyEntity>>
-
-    // Фильтрация валют по ID категории (JOIN с промежуточной таблицей)
     @Query("""
         SELECT c.* FROM currencies c
         INNER JOIN currency_category_cross_ref ref ON c.code = ref.currencyCode
@@ -39,16 +31,10 @@ interface CurrencyDao {
         ORDER BY c.code ASC
     """)
     fun getCurrenciesByCategory(categoryId: Long): Flow<List<CurrencyEntity>>
-
-    // Сортировка по названию (А-Я)
     @Query("SELECT * FROM currencies ORDER BY name ASC")
     fun getAllCurrenciesSortedByNameAsc(): Flow<List<CurrencyEntity>>
-
-    // Сортировка по курсу (по убыванию)
     @Query("SELECT * FROM currencies ORDER BY currentRate DESC")
     fun getAllCurrenciesSortedByRateDesc(): Flow<List<CurrencyEntity>>
-
-    // Сортировка по курсу (по возрастанию)
     @Query("SELECT * FROM currencies ORDER BY currentRate ASC")
     fun getAllCurrenciesSortedByRateAsc(): Flow<List<CurrencyEntity>>
 }

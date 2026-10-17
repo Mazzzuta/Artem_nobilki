@@ -27,11 +27,19 @@ class PairDetailFragment : Fragment(R.layout.fragment_pair_detail) {
         observe(model.data) { state ->
             if (!state.loaded) return@observe
             val pair = state.pairs.find { it.id == id }
-            if (pair == null) { b.details.text = "Пара удалена"; b.edit.isEnabled = false; b.convert.isEnabled = false; b.delete.isEnabled = false }
+            if (pair == null) { b.details.visibility = View.GONE; b.screenTitle.text = "Пара удалена"; b.edit.isEnabled = false; b.convert.isEnabled = false; b.delete.isEnabled = false }
             else {
                 val categoryIds = state.links.filter { it.pairId == id }.map { it.categoryId }
                 val categories = state.categories.filter { it.categoryId in categoryIds }.joinToString { it.title }.ifBlank { "Без категории" }
-                b.details.text = "${pair.title}\n\n${pair.fromCode} → ${pair.toCode}\nСумма: ${number(pair.defaultAmount)} ${pair.fromCode}\n\nЗаметка: ${pair.note.ifBlank { "—" }}\n\nКатегории: $categories\nСоздана: ${dateText(pair.createdAt)}\nКонвертаций: ${state.history.count { it.pairId == id }}"
+                b.details.visibility = View.VISIBLE
+                b.pairTitle.text = pair.title
+                b.pairRoute.text = "${pair.fromCode} → ${pair.toCode}"
+                b.pairAmount.text = "${number(pair.defaultAmount)} ${pair.fromCode}"
+                b.pairNoteGroup.visibility = if (pair.note.isBlank()) View.GONE else View.VISIBLE
+                b.pairNote.text = pair.note
+                b.pairCategories.text = categories
+                b.pairCreated.text = dateText(pair.createdAt)
+                b.pairConversions.text = state.history.count { it.pairId == id }.toString()
             }
         }
     }

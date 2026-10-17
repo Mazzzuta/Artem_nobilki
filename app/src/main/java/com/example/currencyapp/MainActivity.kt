@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val prefs = com.example.currencyapp.data.AppPreferences(application).values.value
-        androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(if (prefs.dark) androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES else androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO)
+        androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(prefs.theme.nightMode)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
@@ -27,17 +27,13 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.ime())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        // Загружаем главный экран по умолчанию при первом запуске
         if (savedInstanceState == null) {
             loadFragment(HomeFragment())
         }
-
-        // Обработка нажатий на элементы BottomNavigationView
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_home -> {

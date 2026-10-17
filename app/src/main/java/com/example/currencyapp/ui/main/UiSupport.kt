@@ -43,4 +43,6 @@ fun Fragment.open(fragment: Fragment) {
     parentFragmentManager.beginTransaction().replace(R.id.fragmentContainer, fragment).addToBackStack(null).commit()
 }
 fun dateText(timestamp: Long): String = if (timestamp <= 0) "дата неизвестна" else SimpleDateFormat("dd.MM.yyyy", Locale("ru")).format(Date(timestamp))
-fun number(value: Double): String = String.format(Locale("ru"), "%,.4f", value)
+fun number(value: Double): String = String.format(Locale("ru"), "%,.2f", value)
+
+fun amountText(value: Double): String = String.format(Locale("ru"), "%.2f", value)

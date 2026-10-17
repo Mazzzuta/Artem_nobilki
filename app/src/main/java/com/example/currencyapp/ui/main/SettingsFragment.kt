@@ -13,10 +13,13 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     private val model: AppViewModel by activityViewModels { AppViewModel.Factory(requireActivity().application) }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val b = FragmentSettingsBinding.bind(view)
-        b.dark.isChecked = model.preferences.values.value.dark
-        b.dark.setOnCheckedChangeListener { _, checked ->
-            model.preferences.save(model.preferences.values.value.copy(dark = checked))
-            AppCompatDelegate.setDefaultNightMode(if (checked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
+        val themes = com.example.currencyapp.data.AppTheme.values().toList()
+        b.theme.items(listOf("Светлая", "Тёмная", "Системная"), themes.indexOf(model.preferences.values.value.theme)) { index ->
+            val theme = themes[index]
+            if (model.preferences.values.value.theme != theme) {
+                model.preferences.save(model.preferences.values.value.copy(theme = theme))
+                AppCompatDelegate.setDefaultNightMode(theme.nightMode)
+            }
         }
         b.sort.items(listOf("Сначала новые", "По названию", "Сначала старые"), model.preferences.values.value.sort) {
             model.preferences.save(model.preferences.values.value.copy(sort = it))

@@ -13,6 +13,9 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
     private val model: AppViewModel by activityViewModels { AppViewModel.Factory(requireActivity().application) }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val b = FragmentConverterBinding.bind(view)
+        val historyAdapter = com.example.currencyapp.ui.adapters.RecordAdapter()
+        b.history.layoutManager = androidx.recyclerview.widget.LinearLayoutManager(requireContext())
+        b.history.adapter = historyAdapter
         val pairId = arguments?.getLong("id")?.takeIf { it > 0 }
         var codes = emptyList<String>()
         var initialized = false
@@ -28,6 +31,7 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
                 val operation = model.repository.convert(amount, from, to, pairId)
                 val result = "${number(amount)} $from = ${number(operation.result)} $to\nКурс ЦБ на ${dateText(operation.rateDate)}\nСохранено в историю"
                 b.result.text = result
+                b.resultCard.visibility = View.VISIBLE
             }
         }
         observe(model.status) { status -> b.rateInfo.text = status.message }
@@ -35,7 +39,7 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
             if (!state.loaded) return@observe
             val pair = state.pairs.find { it.id == pairId }
             b.pairName.text = pair?.title ?: "Обмен по официальным курсам ЦБ"
-            val newCodes = state.currencies.map { it.code }.sorted()
+            val newCodes = (state.currencies.map { it.code } + listOfNotNull(pair?.fromCode, pair?.toCode)).distinct().sorted()
             if (newCodes != codes) {
                 val from = b.from.selectedItem?.toString() ?: pair?.fromCode ?: "USD"
                 val to = b.to.selectedItem?.toString() ?: pair?.toCode ?: model.preferences.values.value.base
@@ -44,15 +48,18 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
                 b.to.items(codes, codes.indexOf(to))
             }
             if (!initialized) {
-                if (savedInstanceState == null) b.amount.setText((pair?.defaultAmount ?: 1.0).toString())
+                if (savedInstanceState == null) b.amount.setText(amountText(pair?.defaultAmount ?: 1.0))
                 initialized = true
             }
-            b.convert.isEnabled = codes.isNotEmpty()
+            b.convert.isEnabled = state.currencies.isNotEmpty()
             val lastDate = state.currencies.maxOfOrNull { it.lastUpdated }
             if (lastDate != null) b.rateInfo.text = "Курс ЦБ на ${dateText(lastDate)} · доступен офлайн"
-            b.history.text = state.history.take(20).joinToString("\n\n") {
-                "${dateText(it.timestamp)} · ${number(it.amount)} ${it.fromCurrency} → ${number(it.result)} ${it.toCurrency}\nКурс: ${number(it.rate)} · ${dateText(it.rateDate)}"
-            }.ifBlank { "История пуста. Выполните первую конвертацию." }
+            b.historyEmpty.visibility = if (state.history.isEmpty()) View.VISIBLE else View.GONE
+            historyAdapter.submitList(state.history.take(20).map {
+                com.example.currencyapp.ui.adapters.RecordRow(it.id.toString(),
+                    "${number(it.amount)} ${it.fromCurrency} → ${number(it.result)} ${it.toCurrency}",
+                    "${dateText(it.timestamp)}\nКурс: ${number(it.rate)} · ЦБ на ${dateText(it.rateDate)}")
+            })
         }
     }
     companion object { fun newInstance(id: Long) = ConverterFragment().apply { arguments = Bundle().apply { putLong("id", id) } } }

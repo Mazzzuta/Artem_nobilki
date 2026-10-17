@@ -1,2 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="20dp"><TextView android:id="@+id/screenTitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="12dp" android:text="Избранные пары" android:textSize="26sp" /><TextView android:id="@+id/subtitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="12dp" android:text="Сохраняйте направления обмена и группируйте их по категориям" android:textSize="14sp" /><com.google.android.material.textfield.TextInputLayout android:id="@+id/searchLayout" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="12dp" android:hint="Поиск по названию, заметке или валюте" style="@style/Widget.Material3.TextInputLayout.OutlinedBox"><com.google.android.material.textfield.TextInputEditText android:id="@+id/search" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="text" /></com.google.android.material.textfield.TextInputLayout><com.google.android.material.button.MaterialButton android:id="@+id/filters" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Фильтры и сортировка" /><com.google.android.material.button.MaterialButton android:id="@+id/add" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Добавить пару" android:minHeight="48dp" /><com.google.android.material.button.MaterialButton android:id="@+id/categories" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Управление категориями" android:minHeight="48dp" /><ProgressBar android:id="@+id/progress" android:layout_width="32dp" android:layout_height="32dp" android:layout_gravity="center" android:visibility="gone" /><TextView android:id="@+id/empty" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="12dp" android:text="" android:textSize="16sp" /><androidx.recyclerview.widget.RecyclerView android:id="@+id/list" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" /></LinearLayout>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent">
+    
+        
+    <com.google.android.material.appbar.AppBarLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:background="?attr/colorSurface" app:elevation="0dp">
+        
+            
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="24dp" app:layout_scrollFlags="scroll|enterAlways">
+            <TextView android:id="@+id/screenTitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Избранные пары" android:textSize="26sp" android:lineSpacingExtra="4dp" android:layout_marginBottom="24dp" android:textStyle="bold"/>
+            <TextView android:id="@+id/subtitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Сохранённые направления обмена" android:textSize="14sp" android:lineSpacingExtra="4dp" android:layout_marginBottom="20dp" android:textColor="?attr/colorOnSurfaceVariant"/>
+            <com.google.android.material.textfield.TextInputLayout android:id="@+id/searchLayout" style="@style/Widget.Material3.TextInputLayout.OutlinedBox" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="16dp" android:hint="Поиск по названию, заметке или валюте">
+                <com.google.android.material.textfield.TextInputEditText android:id="@+id/search" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="text"/>
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.button.MaterialButton android:id="@+id/add" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="52dp" android:layout_marginBottom="12dp" android:text="Добавить пару"/>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                <com.google.android.material.button.MaterialButton android:id="@+id/filters" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_weight="1" android:layout_marginEnd="6dp" android:layout_height="wrap_content" android:minHeight="52dp" android:layout_marginBottom="12dp" android:text="Фильтры"/>
+                <com.google.android.material.button.MaterialButton android:id="@+id/categories" style="@style/Widget.Material3.Button.OutlinedButton" android:layout_width="0dp" android:layout_weight="1" android:layout_marginStart="6dp" android:layout_height="wrap_content" android:minHeight="52dp" android:layout_marginBottom="12dp" android:text="Категории"/>
+            </LinearLayout>
+            <ProgressBar android:id="@+id/progress" android:layout_width="32dp" android:layout_height="32dp" android:layout_margin="12dp" android:layout_gravity="center" android:visibility="gone"/>
+            <TextView android:id="@+id/empty" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="" android:textSize="16sp" android:lineSpacingExtra="4dp" android:layout_marginBottom="12dp"/>
+        </LinearLayout>
+        
+        
+    </com.google.android.material.appbar.AppBarLayout>
+    
+        
+    <androidx.recyclerview.widget.RecyclerView android:id="@+id/list" android:layout_width="match_parent" android:layout_height="match_parent" android:paddingStart="24dp" android:paddingEnd="24dp" android:paddingBottom="24dp" android:clipToPadding="false" app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+    
+    
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

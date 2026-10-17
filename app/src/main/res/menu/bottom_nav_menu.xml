@@ -3,27 +3,29 @@
 
     <item
         android:id="@+id/nav_home"
-        android:icon="@android:drawable/ic_menu_today"
+        android:icon="@drawable/ic_favorites"
         android:title="Избранное" />
 
     <item
         android:id="@+id/nav_currencies"
-        android:icon="@android:drawable/ic_menu_send"
+        android:icon="@drawable/ic_currencies"
         android:title="Валюты" />
 
     <item
         android:id="@+id/nav_converter"
-        android:icon="@android:drawable/ic_menu_sort_by_size"
+        android:icon="@drawable/ic_converter"
         android:title="Конвертер" />
 
     <item
         android:id="@+id/nav_analytics"
-        android:icon="@android:drawable/ic_menu_compass"
+        android:icon="@drawable/ic_analytics"
         android:title="Аналитика" />
 
     <item
         android:id="@+id/nav_settings"
-        android:icon="@android:drawable/ic_menu_preferences"
+        android:icon="@drawable/ic_settings"
         android:title="Настройки" />
 
 </menu>
+
+

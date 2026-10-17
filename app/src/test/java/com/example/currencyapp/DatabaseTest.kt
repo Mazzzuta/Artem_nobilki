@@ -21,6 +21,27 @@ import org.robolectric.annotation.Config
 @Config(sdk = [34])
 class DatabaseTest {
     private val context: Context get() = RuntimeEnvironment.getApplication()
+    @Test fun conversionPersistsActualRateAndWorksFromLocalCache() = runBlocking {
+        val db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()
+        try {
+            db.currencyDao().insertCurrencies(listOf(
+                CurrencyEntity("USD", "Доллар", 90.0, "$", lastUpdated = 200),
+                CurrencyEntity("RUB", "Рубль", 1.0, "₽", lastUpdated = 200)))
+            val repository = com.example.currencyapp.data.repository.AppRepository(db)
+            val id = repository.savePair(FavoritePairEntity(title = "Поездка", fromCode = "USD", toCode = "RUB"), emptyList())
+            val operation = repository.convert(10.0, "USD", "RUB", id)
+            assertEquals(900.0, operation.result, 0.0)
+            assertEquals(90.0, operation.rate, 0.0)
+            assertEquals(200L, operation.rateDate)
+            assertEquals(id, operation.pairId)
+            assertEquals(1, db.historyDao().getAllHistory().first().size)
+            db.currencyDao().insertCurrency(CurrencyEntity("USD", "Доллар", 91.0, "$", lastUpdated = 300))
+            try { repository.convert(10.0, "USD", "RUB", id); fail("Mixed quote dates must fail") }
+            catch (expected: IllegalStateException) { }
+            assertEquals(1, db.historyDao().getAllHistory().first().size)
+        } finally { db.close() }
+    }
+
     @Test fun migrationPreservesLegacyDataAndValidatesRoomSchema() = runBlocking {
         val name = "migration-test.db"
         context.deleteDatabase(name)
