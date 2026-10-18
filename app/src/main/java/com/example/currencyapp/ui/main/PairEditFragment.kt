@@ -19,8 +19,8 @@ class PairEditFragment : Fragment(R.layout.fragment_pair_edit) {
         var original: FavoritePairEntity? = null
         var initialized = false
         val codes = (model.data.value.currencies.map { it.code } + model.data.value.pairs.flatMap { listOf(it.fromCode, it.toCode) } + listOf("RUB", "USD", "EUR", "CNY", "GBP", "JPY", "KZT")).distinct().sorted()
-        b.from.items(codes, codes.indexOf("USD"))
-        b.to.items(codes, codes.indexOf(model.preferences.values.value.base))
+        b.from.currencyItems(codes, model.data.value.currencies, codes.indexOf("USD"))
+        b.to.currencyItems(codes, model.data.value.currencies, codes.indexOf(model.preferences.values.value.base))
         b.cancel.setOnClickListener { parentFragmentManager.popBackStack() }
         observe(model.data) { state ->
             if (!state.loaded || initialized) return@observe

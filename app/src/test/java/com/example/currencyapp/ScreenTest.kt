@@ -13,6 +13,32 @@ import org.robolectric.annotation.Config
 @RunWith(RobolectricTestRunner::class)
 @Config(sdk = [34])
 class ScreenTest {
+    @Test fun keyboardInsetsAreAppliedOnceWithoutExpandingNavigation() {
+        val controller = org.robolectric.Robolectric.buildActivity(MainActivity::class.java).setup().visible()
+        try {
+            val activity = controller.get()
+            val root = activity.findViewById<android.view.View>(R.id.main)
+            val navigation = activity.findViewById<android.view.View>(R.id.bottomNavigation)
+            val insets = androidx.core.view.WindowInsetsCompat.Builder()
+                .setInsets(androidx.core.view.WindowInsetsCompat.Type.statusBars(), androidx.core.graphics.Insets.of(0, 24, 0, 0))
+                .setInsets(androidx.core.view.WindowInsetsCompat.Type.navigationBars(), androidx.core.graphics.Insets.of(0, 0, 0, 24))
+                .setInsets(androidx.core.view.WindowInsetsCompat.Type.ime(), androidx.core.graphics.Insets.of(0, 0, 0, 360))
+                .build()
+            val result = androidx.core.view.ViewCompat.dispatchApplyWindowInsets(root, insets)
+            root.measure(android.view.View.MeasureSpec.makeMeasureSpec(1080, android.view.View.MeasureSpec.EXACTLY), android.view.View.MeasureSpec.makeMeasureSpec(2340, android.view.View.MeasureSpec.EXACTLY))
+            root.layout(0, 0, 1080, 2340)
+            assertTrue(result.isConsumed)
+            assertEquals(360, root.paddingBottom)
+            assertTrue(navigation.paddingBottom < 100)
+            val keyboardHeight = navigation.height
+            androidx.core.view.ViewCompat.dispatchApplyWindowInsets(root, androidx.core.view.WindowInsetsCompat.Builder(insets)
+                .setInsets(androidx.core.view.WindowInsetsCompat.Type.ime(), androidx.core.graphics.Insets.NONE).build())
+            root.measure(android.view.View.MeasureSpec.makeMeasureSpec(1080, android.view.View.MeasureSpec.EXACTLY), android.view.View.MeasureSpec.makeMeasureSpec(2340, android.view.View.MeasureSpec.EXACTLY))
+            root.layout(0, 0, 1080, 2340)
+            assertEquals(24, root.paddingBottom)
+            assertEquals(keyboardHeight, navigation.height)
+        } finally { controller.pause().stop().destroy() }
+    }
     @Test fun markerDisplaysTheOriginalQuoteWithTwoDecimals() {
         val context = ContextThemeWrapper(RuntimeEnvironment.getApplication(), R.style.Theme_CurrencyApp)
         val marker = com.example.currencyapp.ui.main.RateMarkerView(context,

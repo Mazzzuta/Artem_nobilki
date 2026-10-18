@@ -4,7 +4,7 @@
     android:layout_width="match_parent" android:layout_height="wrap_content"
     android:minHeight="56dp" android:gravity="center_vertical"
     android:paddingStart="20dp" android:paddingEnd="20dp"
-    android:paddingTop="14dp" android:paddingBottom="14dp"
-    android:singleLine="true" android:ellipsize="end" android:textSize="16sp"
+    android:paddingTop="20dp" android:paddingBottom="20dp"
+    android:maxLines="2" android:ellipsize="end" android:textSize="16sp"
     android:textColor="?android:attr/textColorPrimary" />
 

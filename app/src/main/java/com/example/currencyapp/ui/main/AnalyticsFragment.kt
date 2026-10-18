@@ -56,17 +56,12 @@ class AnalyticsFragment : Fragment(R.layout.fragment_analytics) {
             b.empty.visibility = if (state.history.isEmpty()) View.VISIBLE else View.GONE
             b.usageChart.visibility = if (state.history.isEmpty()) View.GONE else View.VISIBLE
             val grouped = state.history.groupingBy { "${it.fromCurrency}→${it.toCurrency}" }.eachCount().toList().sortedByDescending { it.second }
-            val labels = grouped.map { it.first }
-            b.usageChart.data = BarData(BarDataSet(grouped.mapIndexed { index, entry -> BarEntry(index.toFloat(), entry.second.toFloat()) }, "Конвертации").apply { color = primary; valueTextColor = textColor; valueTextSize = 12f })
-            b.usageChart.xAxis.valueFormatter = IndexAxisValueFormatter(labels)
-            b.usageChart.xAxis.labelRotationAngle = -35f
-            b.usageChart.invalidate()
-            b.usageTable.text = grouped.joinToString("\n") { "${it.first}: ${it.second}" }
+            b.usageChart.showConversions(grouped, primary, textColor)
             val newCodes = state.currencies.map { it.code }.sorted()
             if (newCodes != codes) {
                 codes = newCodes
                 if (selectedCode !in codes && codes.isNotEmpty()) selectedCode = codes.first()
-                b.currency.items(codes, codes.indexOf(selectedCode)) { index ->
+                b.currency.currencyItems(codes, state.currencies, codes.indexOf(selectedCode)) { index ->
                     if (codes[index] != selectedCode) { selectedCode = codes[index]; loadChart() }
                 }
                 if (codes.isNotEmpty() && model.chart.value.points.isEmpty() && !model.chart.value.status.loading) loadChart()
@@ -108,4 +103,39 @@ class AnalyticsFragment : Fragment(R.layout.fragment_analytics) {
         }
         super.onSaveInstanceState(outState)
     }
+}
+
+fun com.github.mikephil.charting.charts.BarChart.showConversions(grouped: List<Pair<String, Int>>, primary: Int, textColor: Int) {
+    val integerFormatter = object : com.github.mikephil.charting.formatter.ValueFormatter() {
+        override fun getFormattedValue(value: Float) = value.toInt().toString()
+    }
+    data = BarData(BarDataSet(grouped.mapIndexed { index, entry -> BarEntry(index.toFloat(), entry.second.toFloat()) }, "Конвертации").apply {
+        color = primary
+        valueTextColor = textColor
+        valueTextSize = 12f
+        valueFormatter = integerFormatter
+    }).apply { barWidth = 0.7f }
+    axisLeft.valueFormatter = integerFormatter
+    axisLeft.axisMinimum = 0f
+    axisLeft.granularity = 1f
+    axisRight.isEnabled = false
+    xAxis.apply {
+        valueFormatter = IndexAxisValueFormatter(grouped.map { it.first })
+        axisMinimum = -0.5f
+        axisMaximum = grouped.size.coerceAtLeast(1) - 0.5f
+        granularity = 1f
+        setLabelCount(6, false)
+        labelRotationAngle = -55f
+        textSize = 10f
+        setDrawGridLines(false)
+        position = XAxis.XAxisPosition.BOTTOM
+    }
+    legend.isEnabled = false
+    setExtraOffsets(8f, 16f, 8f, 24f)
+    setScaleEnabled(false)
+    isDragEnabled = true
+    isDragDecelerationEnabled = false
+    setVisibleXRangeMaximum(6f)
+    moveViewToX(-0.5f)
+    invalidate()
 }

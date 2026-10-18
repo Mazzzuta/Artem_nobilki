@@ -13,7 +13,6 @@
                 <TextView android:id="@+id/usageCardTitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Конвертации по направлениям" android:textSize="18sp" android:lineSpacingExtra="4dp" android:layout_marginBottom="16dp" android:textStyle="bold"/>
                 <TextView android:id="@+id/empty" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Проведите первую конвертацию — здесь появится статистика." android:textSize="14sp" android:lineSpacingExtra="4dp" android:layout_marginBottom="16dp" android:textColor="?attr/colorOnSurfaceVariant"/>
                 <com.github.mikephil.charting.charts.BarChart android:id="@+id/usageChart" android:layout_width="match_parent" android:layout_height="260dp" android:contentDescription="Количество конвертаций по валютным парам"/>
-                <TextView android:id="@+id/usageTable" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="" android:textSize="14sp" android:lineSpacingExtra="4dp" android:layout_marginBottom="0dp" android:layout_marginTop="16dp"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
         <com.google.android.material.card.MaterialCardView android:id="@+id/historyChartCard" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="20dp" app:cardCornerRadius="16dp" app:cardElevation="0dp" app:strokeWidth="1dp" app:strokeColor="?attr/colorOutlineVariant">

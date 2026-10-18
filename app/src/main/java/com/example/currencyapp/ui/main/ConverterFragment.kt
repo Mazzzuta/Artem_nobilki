@@ -44,8 +44,8 @@ class ConverterFragment : Fragment(R.layout.fragment_converter) {
                 val from = b.from.selectedItem?.toString() ?: pair?.fromCode ?: "USD"
                 val to = b.to.selectedItem?.toString() ?: pair?.toCode ?: model.preferences.values.value.base
                 codes = newCodes
-                b.from.items(codes, codes.indexOf(from))
-                b.to.items(codes, codes.indexOf(to))
+                b.from.currencyItems(codes, state.currencies, codes.indexOf(from))
+                b.to.currencyItems(codes, state.currencies, codes.indexOf(to))
             }
             if (!initialized) {
                 if (savedInstanceState == null) b.amount.setText(amountText(pair?.defaultAmount ?: 1.0))

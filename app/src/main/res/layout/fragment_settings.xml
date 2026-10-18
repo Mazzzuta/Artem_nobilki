@@ -2,22 +2,34 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:fillViewport="true" android:clipToPadding="false">
     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="24dp">
         <TextView android:id="@+id/screenTitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Настройки" android:textSize="26sp" android:lineSpacingExtra="4dp" android:layout_marginBottom="24dp" android:textStyle="bold"/>
+        <com.google.android.material.card.MaterialCardView android:id="@+id/profileCard" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="20dp" app:cardCornerRadius="16dp" app:cardElevation="0dp" app:strokeWidth="1dp" app:strokeColor="?attr/colorOutlineVariant">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp">
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Личный кабинет" android:textSize="20sp" android:textStyle="bold" android:layout_marginBottom="20dp"/>
+                <com.google.android.material.textfield.TextInputLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="ФИО" android:layout_marginBottom="20dp" style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    <com.google.android.material.textfield.TextInputEditText android:id="@+id/fullName" android:layout_width="match_parent" android:layout_height="wrap_content" android:inputType="textPersonName|textCapWords" android:maxLength="120" android:autofillHints="personName"/>
+                </com.google.android.material.textfield.TextInputLayout>
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Дата рождения" android:textSize="14sp" android:textColor="?attr/colorOnSurfaceVariant" android:layout_marginBottom="8dp"/>
+                <com.google.android.material.button.MaterialButton android:id="@+id/birthDate" android:layout_width="match_parent" android:layout_height="wrap_content" android:minHeight="56dp" style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:layout_marginBottom="20dp"/>
+                <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Дата регистрации в приложении" android:textSize="14sp" android:textColor="?attr/colorOnSurfaceVariant" android:layout_marginBottom="8dp"/>
+                <TextView android:id="@+id/registeredAt" android:layout_width="match_parent" android:layout_height="wrap_content" android:textSize="18sp"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
         <com.google.android.material.card.MaterialCardView android:id="@+id/themeCard" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="20dp" app:cardCornerRadius="16dp" app:cardElevation="0dp" app:strokeWidth="1dp" app:strokeColor="?attr/colorOutlineVariant">
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp">
                 <TextView android:id="@+id/themeLabel" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Тема приложения" android:textSize="14sp" android:lineSpacingExtra="4dp" android:layout_marginBottom="8dp" android:textColor="?attr/colorOnSurfaceVariant"/>
-                <com.example.currencyapp.ui.main.DropdownSpinner android:id="@+id/theme" android:layout_width="match_parent" android:layout_height="56dp" android:layout_marginBottom="16dp" android:contentDescription="Тема приложения"/>
+                <com.example.currencyapp.ui.main.DropdownSpinner android:id="@+id/theme" android:layout_width="match_parent" android:layout_height="56dp" android:contentDescription="Тема приложения"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
         <com.google.android.material.card.MaterialCardView android:id="@+id/baseCard" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="20dp" app:cardCornerRadius="16dp" app:cardElevation="0dp" app:strokeWidth="1dp" app:strokeColor="?attr/colorOutlineVariant">
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp">
                 <TextView android:id="@+id/baseLabel" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Базовая валюта отображения" android:textSize="14sp" android:lineSpacingExtra="4dp" android:layout_marginBottom="8dp" android:textColor="?attr/colorOnSurfaceVariant"/>
-                <com.example.currencyapp.ui.main.DropdownSpinner android:id="@+id/base" android:layout_width="match_parent" android:layout_height="56dp" android:layout_marginBottom="16dp" android:contentDescription="Базовая валюта отображения"/>
+                <com.example.currencyapp.ui.main.DropdownSpinner android:id="@+id/base" android:layout_width="match_parent" android:layout_height="56dp" android:contentDescription="Базовая валюта отображения"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
         <com.google.android.material.card.MaterialCardView android:id="@+id/sortCard" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="20dp" app:cardCornerRadius="16dp" app:cardElevation="0dp" app:strokeWidth="1dp" app:strokeColor="?attr/colorOutlineVariant">
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp">
                 <TextView android:id="@+id/sortLabel" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Сортировка избранных пар" android:textSize="14sp" android:lineSpacingExtra="4dp" android:layout_marginBottom="8dp" android:textColor="?attr/colorOnSurfaceVariant"/>
-                <com.example.currencyapp.ui.main.DropdownSpinner android:id="@+id/sort" android:layout_width="match_parent" android:layout_height="56dp" android:layout_marginBottom="16dp" android:contentDescription="Сортировка избранных пар"/>
+                <com.example.currencyapp.ui.main.DropdownSpinner android:id="@+id/sort" android:layout_width="match_parent" android:layout_height="56dp" android:contentDescription="Сортировка избранных пар"/>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
